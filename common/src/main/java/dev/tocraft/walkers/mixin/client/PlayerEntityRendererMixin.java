@@ -56,22 +56,23 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
         super(ctx, model, shadowRadius);
     }
 
-    @Inject(method = "extractRenderState(Lnet/minecraft/client/player/AbstractClientPlayer;Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;F)V", at = @At("RETURN"))
-    private void onCreateState(AbstractClientPlayer player, AvatarRenderState state, float f, CallbackInfo ci) {
-        ((ShapeRenderStateProvider) state).walkers$setInvisRide(Minecraft.getInstance().options.getCameraType().isFirstPerson() && player.getVehicle() == Minecraft.getInstance().getCameraEntity());
+    @Inject(method = "extractRenderState(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;F)V", at = @At("RETURN"))
+    private void onCreateState(Avatar avatar, AvatarRenderState state, float f, CallbackInfo ci) {
+        if (avatar instanceof AbstractClientPlayer player) {
+            ((ShapeRenderStateProvider) state).walkers$setInvisRide(Minecraft.getInstance().options.getCameraType().isFirstPerson() && player.getVehicle() == Minecraft.getInstance().getCameraEntity());
 
-        ((ShapeRenderStateProvider) state).walkers$setShape(() -> {
-            LivingEntity shape = PlayerShape.getCurrentShape(player);
-            if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() || player.getVehicle() != Minecraft.getInstance().getCameraEntity()) {
-                if (shape != null) {
-                    walkers$updateShapeAttributes(player, shape);
+            ((ShapeRenderStateProvider) state).walkers$setShape(() -> {
+                LivingEntity shape = PlayerShape.getCurrentShape(player);
+                if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() || player.getVehicle() != Minecraft.getInstance().getCameraEntity()) {
+                    if (shape != null) {
+                        walkers$updateShapeAttributes(player, shape);
+                    }
+                    return shape;
                 }
-                return shape;
-            }
-            return null;
-        });
+                return null;
+            });
+        }
     }
-
     @Unique
     private void walkers$updateShapeAttributes(@NotNull AvatarRenderState player, @NotNull EntityRenderState shape) {
         shape.y = player.y;
