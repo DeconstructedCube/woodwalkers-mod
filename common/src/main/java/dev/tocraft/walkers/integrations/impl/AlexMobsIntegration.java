@@ -6,7 +6,7 @@ import dev.tocraft.walkers.traits.impl.FearedTrait;
 import dev.tocraft.walkers.traits.impl.PreyTrait;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -52,10 +52,10 @@ public class AlexMobsIntegration extends AbstractIntegration {
     }
 
     private static EntityType<Mob> getType(String entityId) {
-        return (EntityType<Mob>) BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.fromNamespaceAndPath(MODID, entityId)).orElseThrow().value();
+        return (EntityType<Mob>) BuiltInRegistries.ENTITY_TYPE.get(Identifier.fromNamespaceAndPath(MODID, entityId)).orElseThrow().value();
     }
 
     private static TagKey<EntityType<?>> getTag(String tagId) {
-        return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, tagId));
+        return TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MODID, tagId));
     }
 }

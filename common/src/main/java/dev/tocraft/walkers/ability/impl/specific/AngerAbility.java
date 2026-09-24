@@ -6,7 +6,7 @@ import dev.tocraft.walkers.api.PlayerShape;
 import dev.tocraft.walkers.mixin.EntityTrackerAccessor;
 import dev.tocraft.walkers.mixin.ThreadedAnvilChunkStorageAccessor;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -19,7 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 public class AngerAbility<T extends Mob> extends ShapeAbility<T> {
-    public static final ResourceLocation ID = Walkers.id("anger");
+    public static final Identifier ID = Walkers.id("anger");
 
     private final SoundEvent notAggressiveSound;
     private final SoundEvent aggressiveSound;
@@ -40,7 +40,7 @@ public class AngerAbility<T extends Mob> extends ShapeAbility<T> {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 

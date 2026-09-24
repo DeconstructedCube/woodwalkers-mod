@@ -7,12 +7,12 @@ import dev.tocraft.walkers.Walkers;
 import dev.tocraft.walkers.ability.GenericShapeAbility;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.ThrownSplashPotion;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownSplashPotion;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
@@ -31,9 +31,9 @@ public class ThrowPotionsAbility<T extends LivingEntity> extends GenericShapeAbi
         this.validPotions = validPotions;
     }
 
-    public static final ResourceLocation ID = Walkers.id("throw_potion");
+    public static final Identifier ID = Walkers.id("throw_potion");
     public static final MapCodec<ThrowPotionsAbility<?>> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-            Codec.list(ResourceLocation.CODEC).optionalFieldOf("potions", VALID_POTIONS.stream().map(potion -> BuiltInRegistries.POTION.getKey(potion.value())).toList()).forGetter(o -> o.validPotions.stream().map(potion -> BuiltInRegistries.POTION.getKey(potion.value())).toList())
+            Codec.list(Identifier.CODEC).optionalFieldOf("potions", VALID_POTIONS.stream().map(potion -> BuiltInRegistries.POTION.getKey(potion.value())).toList()).forGetter(o -> o.validPotions.stream().map(potion -> BuiltInRegistries.POTION.getKey(potion.value())).toList())
     ).apply(instance, instance.stable(validPotions -> new ThrowPotionsAbility<>(validPotions.stream().map(potionId -> (Holder<Potion>) BuiltInRegistries.POTION.get(potionId).orElseThrow()).toList()))));
 
     public ThrowPotionsAbility() {
@@ -63,7 +63,7 @@ public class ThrowPotionsAbility<T extends LivingEntity> extends GenericShapeAbi
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 

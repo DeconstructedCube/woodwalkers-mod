@@ -9,16 +9,16 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class AttackForHealthTrait<E extends LivingEntity> extends ShapeTrait<E> {
-    public static final ResourceLocation ID = Walkers.id("attack_for_health");
+    public static final Identifier ID = Walkers.id("attack_for_health");
     public static final MapCodec<AttackForHealthTrait<?>> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.stable(new AttackForHealthTrait<>()));
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 
@@ -35,7 +35,7 @@ public class AttackForHealthTrait<E extends LivingEntity> extends ShapeTrait<E> 
     @Environment(EnvType.CLIENT)
     @Override
     public boolean renderIcon(RenderPipeline pipeline, @NotNull GuiGraphics graphics, int x, int y, int width, int height) {
-        graphics.blitSprite(pipeline, Minecraft.getInstance().getGuiSprites().getSprite(ResourceLocation.parse("hud/food_half")), x, y, width, height);
+        graphics.blitSprite(pipeline, Identifier.parse("hud/food_half"), x, y, width, height);
         return true;
     }
 }

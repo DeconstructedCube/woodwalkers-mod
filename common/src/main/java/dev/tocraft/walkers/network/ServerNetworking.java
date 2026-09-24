@@ -35,7 +35,7 @@ public class ServerNetworking implements NetworkHandler {
         ModernNetworking.registerReceiver(ModernNetworking.Side.C2S, USE_ABILITY, (context, packet) -> {
             Player player = context.getPlayer();
 
-            context.getPlayer().getServer().execute(() -> PlayerAbilities.useAbility((ServerPlayer) player));
+            context.getPlayer().level().getServer().execute(() -> PlayerAbilities.useAbility((ServerPlayer) player));
         });
     }
 }

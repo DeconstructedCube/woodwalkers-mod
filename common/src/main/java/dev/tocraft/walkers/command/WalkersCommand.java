@@ -20,7 +20,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -38,7 +38,7 @@ public class WalkersCommand {
 
     private static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext ctx) {
         LiteralCommandNode<CommandSourceStack> rootNode = Commands.literal("walkers")
-                .requires(source -> source.hasPermission(2)).build();
+                .requires(source -> Commands.LEVEL_GAMEMASTERS.check(source.permissions())).build();
 
         /*
          * Used to remove the second shape of the specified Player.
@@ -75,7 +75,7 @@ public class WalkersCommand {
                                     for (ServerPlayer player : EntityArgument.getPlayers(context, "players")) {
                                         change2ndShape(context.getSource(),
                                                 player,
-                                                ResourceArgument.getEntityType(context, "shape").key().location(),
+                                                ResourceArgument.getEntityType(context, "shape").key().identifier(),
                                                 null);
                                     }
                                     return 1;
@@ -85,7 +85,7 @@ public class WalkersCommand {
                                             for (ServerPlayer player : EntityArgument.getPlayers(context, "players")) {
                                                 change2ndShape(context.getSource(),
                                                         player,
-                                                        ResourceArgument.getEntityType(context, "shape").key().location(),
+                                                        ResourceArgument.getEntityType(context, "shape").key().identifier(),
                                                         nbt);
                                             }
                                             return 1;
@@ -116,7 +116,7 @@ public class WalkersCommand {
                                     for (ServerPlayer player : EntityArgument.getPlayers(context, "players")) {
                                         switchShape(context.getSource(),
                                                 player,
-                                                ResourceArgument.getEntityType(context, "shape").key().location(),
+                                                ResourceArgument.getEntityType(context, "shape").key().identifier(),
                                                 null);
                                     }
                                     return 1;
@@ -125,7 +125,7 @@ public class WalkersCommand {
                                     for (ServerPlayer player : EntityArgument.getPlayers(context, "players")) {
                                         switchShape(context.getSource(),
                                                 player,
-                                                ResourceArgument.getEntityType(context, "shape").key().location(),
+                                                ResourceArgument.getEntityType(context, "shape").key().identifier(),
                                                 nbt);
                                     }
                                     return 1;
@@ -174,7 +174,7 @@ public class WalkersCommand {
     }
 
     @SuppressWarnings("unchecked")
-    private static void change2ndShape(CommandSourceStack source, ServerPlayer player, ResourceLocation id,
+    private static void change2ndShape(CommandSourceStack source, ServerPlayer player, Identifier id,
                                        @Nullable CompoundTag nbt) {
         ShapeType<LivingEntity> type = ShapeType.from((EntityType<LivingEntity>) BuiltInRegistries.ENTITY_TYPE.get(id).orElseThrow().value());
         Component name = Component.translatable(type.getEntityType().getDescriptionId());
@@ -205,7 +205,7 @@ public class WalkersCommand {
         }
     }
 
-    private static void switchShape(CommandSourceStack source, ServerPlayer player, ResourceLocation shape, @Nullable CompoundTag nbt) {
+    private static void switchShape(CommandSourceStack source, ServerPlayer player, Identifier shape, @Nullable CompoundTag nbt) {
         Entity created;
 
         if (nbt != null) {

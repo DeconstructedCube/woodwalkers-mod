@@ -16,7 +16,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Parrot;
+import net.minecraft.world.entity.animal.parrot.Parrot;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -143,18 +143,17 @@ public class EntityUpdaters {
         EntityUpdaters.register(EntityType.CAT, (player, cat) -> cat.setInSittingPose(((PlayerDataProvider) player).walkers$getIsSpecialAnim()));
 
         EntityUpdaters.register(EntityType.HOGLIN, (player, hoglin) -> {
-            hoglin.setImmuneToZombification(player.level().dimensionType().piglinSafe());
+            hoglin.setImmuneToZombification(!player.level().environmentAttributes().getValue(net.minecraft.world.attribute.EnvironmentAttributes.PIGLINS_ZOMBIFY, player.position()));
         });
 
         EntityUpdaters.register(EntityType.PIGLIN, (player, piglin) -> {
-            piglin.setImmuneToZombification(player.level().dimensionType().piglinSafe());
+            piglin.setImmuneToZombification(!player.level().environmentAttributes().getValue(net.minecraft.world.attribute.EnvironmentAttributes.PIGLINS_ZOMBIFY, player.position()));
             piglin.setDancing(((PlayerDataProvider) player).walkers$getIsSpecialAnim());
         });
 
         EntityUpdaters.register(EntityType.PIGLIN_BRUTE, (player, piglinBrute) -> {
-            piglinBrute.setImmuneToZombification(player.level().dimensionType().piglinSafe());
+            piglinBrute.setImmuneToZombification(!player.level().environmentAttributes().getValue(net.minecraft.world.attribute.EnvironmentAttributes.PIGLINS_ZOMBIFY, player.position()));
         });
-
         EntityUpdaters.register(EntityType.PANDA, (player, panda) -> {
             panda.sit(((PlayerDataProvider) player).walkers$getIsSpecialAnim());
             ((PandaAccessor) panda).callUpdateSitAmount();

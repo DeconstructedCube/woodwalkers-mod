@@ -9,7 +9,7 @@ import dev.tocraft.walkers.ability.impl.specific.*;
 import dev.tocraft.walkers.integrations.AbstractIntegration;
 import dev.tocraft.walkers.integrations.Integrations;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.TagKey;
@@ -17,8 +17,29 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.animal.*;
+import net.minecraft.world.entity.animal.cow.*;
+import net.minecraft.world.entity.animal.chicken.*;
+import net.minecraft.world.entity.animal.bee.*;
+import net.minecraft.world.entity.animal.dolphin.*;
+import net.minecraft.world.entity.animal.feline.*;
+import net.minecraft.world.entity.animal.fox.*;
+import net.minecraft.world.entity.animal.rabbit.*;
+import net.minecraft.world.entity.animal.polarbear.*;
+import net.minecraft.world.entity.animal.turtle.*;
+import net.minecraft.world.entity.animal.squid.*;
+import net.minecraft.world.entity.animal.parrot.*;
+import net.minecraft.world.entity.animal.wolf.*;
+import net.minecraft.world.entity.animal.fish.*;
+import net.minecraft.world.entity.animal.golem.*;
+import net.minecraft.world.entity.animal.panda.*;
+import net.minecraft.world.entity.monster.skeleton.*;
+import net.minecraft.world.entity.monster.zombie.*;
+import net.minecraft.world.entity.monster.illager.*;
+import net.minecraft.world.entity.monster.spider.*;
+import net.minecraft.world.entity.npc.villager.*;
+
 import net.minecraft.world.entity.animal.goat.Goat;
-import net.minecraft.world.entity.animal.horse.Llama;
+import net.minecraft.world.entity.animal.equine.Llama;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.animal.sniffer.Sniffer;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -26,6 +47,11 @@ import net.minecraft.world.entity.animal.wolf.WolfSoundVariants;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.*;
+import net.minecraft.world.entity.monster.skeleton.*;
+import net.minecraft.world.entity.monster.zombie.*;
+import net.minecraft.world.entity.monster.illager.*;
+import net.minecraft.world.entity.monster.spider.*;
+
 import net.minecraft.world.entity.monster.breeze.Breeze;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.monster.warden.Warden;
@@ -47,8 +73,8 @@ public class AbilityRegistry {
 
     private static final Map<Predicate<LivingEntity>, ShapeAbility<?>> specificAbilities = Collections.synchronizedMap(new LinkedHashMap<>());
     private static final Map<Predicate<LivingEntity>, GenericShapeAbility<?>> genericAbilities = Collections.synchronizedMap(new LinkedHashMap<>());
-    private static final Map<ResourceLocation, MapCodec<? extends GenericShapeAbility<?>>> abilityCodecById = new HashMap<>();
-    private static final Map<MapCodec<? extends GenericShapeAbility<?>>, ResourceLocation> abilityIdByCodec = new IdentityHashMap<>();
+    private static final Map<Identifier, MapCodec<? extends GenericShapeAbility<?>>> abilityCodecById = new HashMap<>();
+    private static final Map<MapCodec<? extends GenericShapeAbility<?>>, Identifier> abilityIdByCodec = new IdentityHashMap<>();
 
     @ApiStatus.Internal
     public static void initialize() {
@@ -208,26 +234,26 @@ public class AbilityRegistry {
         genericAbilities.clear();
     }
 
-    public static void registerCodec(ResourceLocation abilityId, MapCodec<? extends GenericShapeAbility<?>> abilityCodec) {
+    public static void registerCodec(Identifier abilityId, MapCodec<? extends GenericShapeAbility<?>> abilityCodec) {
         abilityCodecById.put(abilityId, abilityCodec);
         abilityIdByCodec.put(abilityCodec, abilityId);
     }
 
     @ApiStatus.Internal
     @Nullable
-    public static MapCodec<? extends GenericShapeAbility<?>> getAbilityCodec(ResourceLocation abilityId) {
+    public static MapCodec<? extends GenericShapeAbility<?>> getAbilityCodec(Identifier abilityId) {
         return abilityCodecById.get(abilityId);
     }
 
     @ApiStatus.Internal
     @Nullable
-    public static ResourceLocation getAbilityId(MapCodec<? extends GenericShapeAbility<?>> traitCodec) {
+    public static Identifier getAbilityId(MapCodec<? extends GenericShapeAbility<?>> traitCodec) {
         return abilityIdByCodec.get(traitCodec);
     }
 
     @ApiStatus.Internal
     public static Codec<GenericShapeAbility<?>> getAbilityCodec() {
-        Codec<MapCodec<? extends GenericShapeAbility<?>>> codec = ResourceLocation.CODEC.flatXmap(
+        Codec<MapCodec<? extends GenericShapeAbility<?>>> codec = Identifier.CODEC.flatXmap(
                 resourceLocation -> Optional.ofNullable(AbilityRegistry.getAbilityCodec(resourceLocation))
                         .map(DataResult::success)
                         .orElseGet(() -> DataResult.error(() -> "Unknown shape ability: " + resourceLocation)),

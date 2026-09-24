@@ -10,17 +10,17 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class SlowFallingTrait<E extends LivingEntity> extends ShapeTrait<E> {
-    public static final ResourceLocation ID = Walkers.id("slow_falling");
+    public static final Identifier ID = Walkers.id("slow_falling");
     public static final MapCodec<SlowFallingTrait<?>> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.stable(new SlowFallingTrait<>()));
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 

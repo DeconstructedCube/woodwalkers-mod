@@ -15,7 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -48,7 +48,7 @@ public class VariantMenu implements RenderEvents.HUDRendering {
             if (level != null && minecraft.player != null) {
                 ShapeType<?> currentShapeType = ShapeType.from(PlayerShape.getCurrentShape(minecraft.player));
                 if (currentShapeType != null) {
-                    boolean hasSpecialVariant = Walkers.hasSpecialShape(minecraft.player.getUUID()) && EntityType.getKey(currentShapeType.getEntityType()).equals(ResourceLocation.parse("minecraft:wolf"));
+                    boolean hasSpecialVariant = Walkers.hasSpecialShape(minecraft.player.getUUID()) && EntityType.getKey(currentShapeType.getEntityType()).equals(Identifier.parse("minecraft:wolf"));
 
                     int currVariant = currentShapeType.getVariantData();
 
@@ -100,7 +100,7 @@ public class VariantMenu implements RenderEvents.HUDRendering {
                             int l = topPos - 30;
                             int m = leftPos + 20;
                             int n = topPos + 30;
-                            InventoryScreen.renderEntityInInventory(guiGraphics, k, l, m, n, (int) (25 / (Math.max(entity.getBbHeight(), entity.getBbWidth()))), new Vector3f(), new Quaternionf().rotationXYZ(0.43633232F, (float) Math.PI, (float) Math.PI), null, entity);
+                            InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, k, l, m, n, (int) (25 / (Math.max(entity.getBbHeight(), entity.getBbWidth()))), 0.0625F, 0.0F, 0.0F, entity);
                         }
                     } else {
                         LivingEntity entity = renderEntities.computeIfAbsent(currentShapeType, type -> type.create(level, minecraft.player));
@@ -111,7 +111,7 @@ public class VariantMenu implements RenderEvents.HUDRendering {
                             int l = topPos - 30;
                             int m = leftPos + 20;
                             int n = topPos + 30;
-                            InventoryScreen.renderEntityInInventory(guiGraphics, k, l, m, n, (int) (25 / (Math.max(entity.getBbHeight(), entity.getBbWidth()))), new Vector3f(), new Quaternionf().rotationXYZ(0.43633232F, (float) Math.PI, (float) Math.PI), null, entity);
+                            InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, k, l, m, n, (int) (25 / (Math.max(entity.getBbHeight(), entity.getBbWidth()))), 0.0625F, 0.0F, 0.0F, entity);
                         }
                     }
                     // render focus

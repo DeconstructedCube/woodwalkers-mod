@@ -5,13 +5,13 @@ import com.mojang.serialization.MapCodec;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 
 
 @SuppressWarnings("unused")
 public abstract class ShapeTrait<E extends LivingEntity> {
-    public abstract ResourceLocation getId();
+    public abstract Identifier getId();
 
     public abstract MapCodec<? extends ShapeTrait<?>> codec();
 

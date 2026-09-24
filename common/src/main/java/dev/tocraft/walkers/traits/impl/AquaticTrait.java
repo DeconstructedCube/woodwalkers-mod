@@ -9,7 +9,7 @@ import dev.tocraft.walkers.traits.ShapeTrait;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public class AquaticTrait<E extends LivingEntity> extends ShapeTrait<E> {
-    public static final ResourceLocation ID = Walkers.id("aquatic");
+    public static final Identifier ID = Walkers.id("aquatic");
     public static final MapCodec<AquaticTrait<?>> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
             Codec.INT.optionalFieldOf("is_aquatic").forGetter(o -> Optional.empty()),
             Codec.BOOL.optionalFieldOf("isAquatic", true).forGetter(o -> o.isAquatic),
@@ -57,7 +57,7 @@ public class AquaticTrait<E extends LivingEntity> extends ShapeTrait<E> {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 

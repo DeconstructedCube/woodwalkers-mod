@@ -22,13 +22,34 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.*;
+import net.minecraft.world.entity.animal.cow.*;
+import net.minecraft.world.entity.animal.chicken.*;
+import net.minecraft.world.entity.animal.bee.*;
+import net.minecraft.world.entity.animal.dolphin.*;
+import net.minecraft.world.entity.animal.feline.*;
+import net.minecraft.world.entity.animal.fox.*;
+import net.minecraft.world.entity.animal.rabbit.*;
+import net.minecraft.world.entity.animal.polarbear.*;
+import net.minecraft.world.entity.animal.turtle.*;
+import net.minecraft.world.entity.animal.squid.*;
+import net.minecraft.world.entity.animal.parrot.*;
+import net.minecraft.world.entity.animal.wolf.*;
+import net.minecraft.world.entity.animal.fish.*;
+import net.minecraft.world.entity.animal.golem.*;
+import net.minecraft.world.entity.animal.panda.*;
+import net.minecraft.world.entity.monster.skeleton.*;
+import net.minecraft.world.entity.monster.zombie.*;
+import net.minecraft.world.entity.monster.illager.*;
+import net.minecraft.world.entity.monster.spider.*;
+import net.minecraft.world.entity.npc.villager.*;
+
 import net.minecraft.world.entity.monster.Ravager;
 import net.minecraft.world.entity.monster.Slime;
-import net.minecraft.world.entity.monster.Spider;
-import net.minecraft.world.entity.monster.WitherSkeleton;
+import net.minecraft.world.entity.monster.spider.Spider;
+import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -79,7 +100,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
             livingTarget.addEffect(new MobEffectInstance(MobEffects.WITHER, 200), this);
         } else if (shape instanceof Bee bee && bee.isAngry() && target instanceof LivingEntity livingTarget) {
             livingTarget.addEffect(new MobEffectInstance(MobEffects.POISON, 200), this);
-        } else if (shape instanceof Pufferfish pufferfish && !level().isClientSide) {
+        } else if (shape instanceof Pufferfish pufferfish && !level().isClientSide()) {
             int i = pufferfish.getPuffState();
 
             if (target instanceof LivingEntity livingTarget) {
@@ -139,7 +160,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
         Player player = (Player) (Object) this;
         LivingEntity shape = PlayerShape.getCurrentShape(player);
 
-        if (!player.level().isClientSide && !player.isCreative() && !player.isSpectator()) {
+        if (!player.level().isClientSide() && !player.isCreative() && !player.isSpectator()) {
             // check if the player is shape
             if (shape != null) {
                 // check if the player's current shape burns in sunlight
@@ -185,7 +206,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
     @SuppressWarnings("deprecation")
     @Unique
     private boolean walkers$isInDaylight() {
-        if (!this.level().isClientSide && !this.level().dimensionType().hasFixedTime() && this.level().getSkyDarken() < 4) {
+        if (!this.level().isClientSide() && !this.level().dimensionType().hasFixedTime() && this.level().getSkyDarken() < 4) {
             float brightnessAtEyes = getLightLevelDependentMagicValue();
             BlockPos daylightTestPosition = BlockPos.containing(getX(), (double) Math.round(getY()), getZ());
 
@@ -233,7 +254,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
             shape.setPose(player.getPose());
             shape.setSwimming(player.isSwimming());
 
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 shape.setPosRaw(player.getX(), player.getY(), player.getZ());
                 shape.setYHeadRot(player.getYHeadRot());
                 shape.setJumping(((LivingEntityAccessor) player).isJumping());
@@ -270,7 +291,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
     @Inject(method = "touch", at = @At("HEAD"))
     private void onTouch(Entity entity, CallbackInfo ci) {
         Player ownPlayer = (Player) (Object) this;
-        if (!this.level().isClientSide && ownPlayer.isAlive() && PlayerShape.getCurrentShape(ownPlayer) instanceof Slime slimeShape && (entity instanceof Player targetPlayer && !(PlayerShape.getCurrentShape(targetPlayer) instanceof Slime))) {
+        if (!this.level().isClientSide() && ownPlayer.isAlive() && PlayerShape.getCurrentShape(ownPlayer) instanceof Slime slimeShape && (entity instanceof Player targetPlayer && !(PlayerShape.getCurrentShape(targetPlayer) instanceof Slime))) {
             int i = slimeShape.getSize();
             boolean wasHurt = targetPlayer.hurtServer((ServerLevel) level(), ownPlayer.damageSources().mobAttack(ownPlayer), (float) ownPlayer.getAttributeValue(Attributes.ATTACK_DAMAGE));
             if (this.distanceToSqr(targetPlayer) < 0.6 * (double) i * 0.6 * (double) i && ownPlayer.hasLineOfSight(targetPlayer) && wasHurt) {

@@ -31,7 +31,7 @@ public abstract class ShadowMixin {
             method = "renderShadow",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;floor(D)I", ordinal = 0), index = 6, argsOnly = true)
     private static float adjustShadowSize(float value) {
-        if (shape_shadowState instanceof PlayerRenderState playerState) {
+        if (shape_shadowState instanceof AvatarRenderState playerState) {
             LivingEntity shape = ((ShapeRenderStateProvider) playerState).walkers$getShape();
 
             if (shape != null) {
