@@ -21,7 +21,6 @@ import net.minecraft.client.model.animal.wolf.WolfModel;
 import net.minecraft.client.model.monster.blaze.BlazeModel;
 import net.minecraft.client.model.monster.creeper.CreeperModel;
 import net.minecraft.client.model.monster.hoglin.HoglinModel;
-import net.minecraft.client.model.monster.illager.IllagerModel;
 import net.minecraft.client.model.monster.ravager.RavagerModel;
 import net.minecraft.client.model.monster.spider.SpiderModel;
 import net.minecraft.client.model.monster.strider.StriderModel;

@@ -47,10 +47,6 @@ import net.minecraft.world.entity.animal.wolf.WolfSoundVariants;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.*;
-import net.minecraft.world.entity.monster.skeleton.*;
-import net.minecraft.world.entity.monster.zombie.*;
-import net.minecraft.world.entity.monster.illager.*;
-import net.minecraft.world.entity.monster.spider.*;
 
 import net.minecraft.world.entity.monster.breeze.Breeze;
 import net.minecraft.world.entity.monster.piglin.Piglin;

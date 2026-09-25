@@ -49,10 +49,6 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.*;
-import net.minecraft.world.entity.monster.skeleton.*;
-import net.minecraft.world.entity.monster.zombie.*;
-import net.minecraft.world.entity.monster.illager.*;
-import net.minecraft.world.entity.monster.spider.*;
 
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.raid.Raider;
