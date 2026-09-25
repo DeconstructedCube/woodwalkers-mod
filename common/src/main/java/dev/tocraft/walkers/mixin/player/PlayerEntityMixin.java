@@ -74,17 +74,6 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
         super(type, world);
     }
 
-    @Inject(method = "getDefaultDimensions", at = @At("HEAD"), cancellable = true)
-    private void getDimensions(Pose pose, CallbackInfoReturnable<EntityDimensions> cir) {
-        LivingEntity entity = PlayerShape.getCurrentShape((Player) (Object) this);
-
-        if (entity != null) {
-            if (pose != Pose.CROUCHING || !TraitRegistry.has(entity, HumanoidTrait.ID)) {
-                EntityDimensions shapeDimensions = entity.getDimensions(pose);
-                cir.setReturnValue(shapeDimensions);
-            }
-        }
-    }
 
     @Inject(method = "attack", at = @At("HEAD"))
     protected void shape_tryAttack(Entity target, CallbackInfo ci) {

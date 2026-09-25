@@ -4,12 +4,15 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.tocraft.walkers.api.PlayerShape;
 import dev.tocraft.walkers.traits.TraitRegistry;
+import dev.tocraft.walkers.traits.impl.HumanoidTrait;
 import dev.tocraft.walkers.traits.impl.NoPhysicsTrait;
-import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -71,7 +74,7 @@ public abstract class EntityMixin {
 
     @SuppressWarnings("rawtypes")
     @WrapOperation(
-            method = "startRiding(Lnet/minecraft/world/entity/Entity;Z)Z",
+            method = "startRiding(Lnet/minecraft/world/entity/Entity;ZZ)Z",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/EntityType;canSerialize()Z")
     )
     private boolean allowRidingPlayers(EntityType instance, Operation<Boolean> original) {
@@ -79,6 +82,20 @@ public abstract class EntityMixin {
             return true;
         } else {
             return original.call(instance);
+        }
+    }
+
+    @Inject(method = "getDimensions", at = @At("HEAD"), cancellable = true)
+    private void getDimensions(Pose pose, CallbackInfoReturnable<EntityDimensions> cir) {
+        if ((Object) this instanceof Player player) {
+            LivingEntity entity = PlayerShape.getCurrentShape(player);
+
+            if (entity != null) {
+                if (pose != Pose.CROUCHING || !TraitRegistry.has(entity, HumanoidTrait.ID)) {
+                    EntityDimensions shapeDimensions = entity.getDimensions(pose);
+                    cir.setReturnValue(shapeDimensions);
+                }
+            }
         }
     }
 }
