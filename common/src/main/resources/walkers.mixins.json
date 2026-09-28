@@ -94,8 +94,7 @@
     "client.accessor.QuadrupedEntityModelAccessor",
     "client.accessor.RavagerEntityModelAccessor",
     "client.accessor.SpiderEntityModelAccessor",
-    "client.accessor.SquidEntityModelAccessor",
-    "integrations.client.BetterCombatMixin"
+    "client.accessor.SquidEntityModelAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

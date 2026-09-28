@@ -1,7 +1,6 @@
 package dev.tocraft.walkers.integrations;
 
 import dev.tocraft.craftedcore.platform.PlatformData;
-import dev.tocraft.walkers.integrations.impl.*;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
@@ -15,12 +14,7 @@ public class Integrations {
 
     @ApiStatus.Internal
     public static void initIntegrations() {
-        register(MobBattleModIntegration.MODID, MobBattleModIntegration::new);
-        register(GuardVillagersIntegration.MODID, GuardVillagersIntegration::new);
-        register(MoreMobVariantsIntegration.MODID, MoreMobVariantsIntegration::new);
-        register(MutantMonstersIntegration.MODID, MutantMonstersIntegration::new);
-        register(AlexMobsIntegration.MODID, AlexMobsIntegration::new);
-        register(PlayerAbilityLibIntegration.MODID, PlayerAbilityLibIntegration::new);
+        // Third-party mod integrations removed for cross-version clean independence
     }
 
     @ApiStatus.Internal
