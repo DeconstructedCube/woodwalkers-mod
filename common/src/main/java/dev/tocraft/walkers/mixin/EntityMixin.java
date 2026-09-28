@@ -1,14 +1,12 @@
 package dev.tocraft.walkers.mixin;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.tocraft.walkers.api.PlayerShape;
 import dev.tocraft.walkers.traits.TraitRegistry;
 import dev.tocraft.walkers.traits.impl.HumanoidTrait;
 import dev.tocraft.walkers.traits.impl.NoPhysicsTrait;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
@@ -63,26 +61,24 @@ public abstract class EntityMixin {
     @Inject(method = "unRide", at = @At("HEAD"))
     private void onUnRide(CallbackInfo ci) {
         Entity entity = (Entity) (Object) this;
-        if (entity.level().isClientSide())
+        if (entity.level().isClientSide()) {
             return;
-
+        }
         Entity vehicle = entity.getVehicle();
         if (vehicle instanceof Player) {
             entity.stopRiding();
         }
     }
 
-    @SuppressWarnings("rawtypes")
-    @WrapOperation(
+    @ModifyExpressionValue(
             method = "startRiding(Lnet/minecraft/world/entity/Entity;ZZ)Z",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/EntityType;canSerialize()Z")
     )
-    private boolean allowRidingPlayers(EntityType instance, Operation<Boolean> original) {
-        if (instance == EntityType.PLAYER) {
+    private boolean allowRidingPlayers(boolean original, Entity vehicle) {
+        if (vehicle instanceof Player) {
             return true;
-        } else {
-            return original.call(instance);
         }
+        return original;
     }
 
     @Inject(method = "getDimensions", at = @At("HEAD"), cancellable = true)

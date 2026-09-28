@@ -51,6 +51,12 @@ public class VillagerTypeProvider extends TypeProvider<Villager> {
 
     @Override
     public Component modifyText(@NotNull Villager entity, MutableComponent text) {
-        return Component.literal(formatTypePrefix(entity.getVillagerData().profession().unwrapKey().map(k -> k.identifier().getPath() + " ").orElse(""))).append(text);
+        return entity.getVillagerData().profession().unwrapKey().map(k -> {
+            String path = k.identifier().getPath();
+            if ("none".equals(path)) {
+                return text;
+            }
+            return Component.translatable("entity.minecraft.villager." + path).append(" ").append(text);
+        }).orElse(text);
     }
 }

@@ -309,17 +309,17 @@ public abstract class PlayerEntityDataMixin extends LivingEntity implements Play
         }
 
         // update flight properties on player depending on shape
-        ServerPlayer serverPlayer = (ServerPlayer) player;
-        if (Walkers.hasFlyingPermissions((ServerPlayer) player)) {
-            FlightHelper.grantFlightTo(serverPlayer);
-            FlightHelper.updateFlyingSpeed(player);
-            player.onUpdateAbilities();
-        } else if (!player.isCreative()) {
-            FlightHelper.revokeFlight(serverPlayer);
-            player.getAbilities().setFlyingSpeed(0.05f);
-            player.onUpdateAbilities();
+        if (player instanceof ServerPlayer serverPlayer) {
+            if (Walkers.hasFlyingPermissions(serverPlayer)) {
+                FlightHelper.grantFlightTo(serverPlayer);
+                FlightHelper.updateFlyingSpeed(player);
+                player.onUpdateAbilities();
+            } else if (!player.isCreative()) {
+                FlightHelper.revokeFlight(serverPlayer);
+                player.getAbilities().setFlyingSpeed(0.05f);
+                player.onUpdateAbilities();
+            }
         }
-
         // If the player is riding a Ravager and changes into a Walkers that cannot
         // ride Ravagers, kick them off.
         if (player.getVehicle() instanceof LivingEntity livingVehicle) {
@@ -347,15 +347,17 @@ public abstract class PlayerEntityDataMixin extends LivingEntity implements Play
         }
 
         // sync with client
-        if (!player.level().isClientSide()) {
-            PlayerShape.sync((ServerPlayer) player);
+        if (player instanceof ServerPlayer serverPlayer && !player.level().isClientSide()) {
+            PlayerShape.sync(serverPlayer);
 
             Int2ObjectMap<Object> trackers = ((ThreadedAnvilChunkStorageAccessor) ((ServerLevel) player.level())
                     .getChunkSource().chunkMap).getEntityMap();
             Object tracking = trackers.get(player.getId());
-            ((EntityTrackerAccessor) tracking).getSeenBy().forEach(
-                    listener -> PlayerShape.sync((ServerPlayer) player, listener.getPlayer())
-            );
+            if (tracking instanceof EntityTrackerAccessor trackerAccessor) {
+                trackerAccessor.getSeenBy().forEach(
+                        listener -> PlayerShape.sync(serverPlayer, listener.getPlayer())
+                );
+            }
         }
     }
 

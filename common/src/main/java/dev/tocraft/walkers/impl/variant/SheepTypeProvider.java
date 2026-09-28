@@ -36,6 +36,6 @@ public class SheepTypeProvider extends TypeProvider<Sheep> {
 
     @Override
     public Component modifyText(Sheep sheep, MutableComponent text) {
-        return Component.literal(formatTypePrefix(DyeColor.byId(getVariantData(sheep)).getName()) + " ").append(text);
+        return Component.translatable("color.minecraft." + DyeColor.byId(getVariantData(sheep)).getName()).append(" ").append(text);
     }
 }

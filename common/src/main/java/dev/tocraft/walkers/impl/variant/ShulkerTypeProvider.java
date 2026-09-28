@@ -43,7 +43,10 @@ public class ShulkerTypeProvider extends TypeProvider<Shulker> {
     @Override
     public Component modifyText(Shulker entity, MutableComponent text) {
         int data = getVariantData(entity);
-        String prefix = data < 16 ? formatTypePrefix(DyeColor.byId(getVariantData(entity)).getName()) : "Natural";
-        return Component.literal(prefix + " ").append(text);
+        if (data < 16) {
+            return Component.translatable("color.minecraft." + DyeColor.byId(data).getName()).append(" ").append(text);
+        } else {
+            return Component.translatableWithFallback("walkers.variant.minecraft.natural", "Natural ").append(text);
+        }
     }
 }

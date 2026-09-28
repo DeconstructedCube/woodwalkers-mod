@@ -37,6 +37,7 @@ public class AxolotlTypeProvider extends TypeProvider<Axolotl> {
 
     @Override
     public Component modifyText(Axolotl entity, MutableComponent text) {
-        return Component.literal(formatTypePrefix(Axolotl.Variant.values()[getVariantData(entity)].getName()) + " ").append(text);
+        String name = Axolotl.Variant.values()[getVariantData(entity)].getName();
+        return Component.translatableWithFallback("walkers.variant.axolotl." + name, formatTypePrefix(name) + " ").append(text);
     }
 }

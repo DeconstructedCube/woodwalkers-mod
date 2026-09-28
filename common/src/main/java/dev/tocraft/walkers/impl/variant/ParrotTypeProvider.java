@@ -47,6 +47,7 @@ public class ParrotTypeProvider extends TypeProvider<Parrot> {
     @Override
     public Component modifyText(Parrot parrot, MutableComponent text) {
         int variant = getVariantData(parrot);
-        return Component.literal(PREFIX_BY_ID.containsKey(variant) ? PREFIX_BY_ID.get(variant) + " " : "").append(text);
+        String name = PREFIX_BY_ID.getOrDefault(variant, "");
+        return Component.translatableWithFallback("walkers.variant.parrot." + variant, name + " ").append(text);
     }
 }

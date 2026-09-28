@@ -40,6 +40,6 @@ public class RabbitTypeProvider extends TypeProvider<Rabbit> {
     @Override
     public Component modifyText(Rabbit entity, MutableComponent text) {
         String variantName = entity.getVariant().getSerializedName();
-        return Component.literal(variantName + " ").append(text);
+        return Component.translatableWithFallback("walkers.variant.rabbit." + variantName, formatTypePrefix(variantName) + " ").append(text);
     }
 }

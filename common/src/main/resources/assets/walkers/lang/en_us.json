@@ -1,5 +1,6 @@
 {
   "key.categories.walkers": "Woodwalkers",
+  "key.category.walkers.walkers": "Woodwalkers",
   "key.walkers": "Transform to your other shape",
   "key.walkers_ability": "Use an Shape Ability",
   "key.walkers_unlock": "Scan a mob",
@@ -28,5 +29,7 @@
   "walkers.entityBlacklist.clear": "The entity blacklist was cleared.",
   "walkers.variants.minecraft.snow_golem.0": "Headless %s",
   "walkers.feature_not_available": "This feature was overwritten by an addon.",
-  "walkers.variants_menu_guide": "Cycle variants by scrolling, select with '%s'"
+  "walkers.variants_menu_guide": "Cycle variants by scrolling, select with '%s'",
+  "walkers.getConfigEntry": "Config entry %s is set to %s",
+  "walkers.setConfigEntry": "Config entry %s is now %s"
 }

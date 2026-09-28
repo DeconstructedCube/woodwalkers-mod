@@ -1,6 +1,5 @@
 package dev.tocraft.walkers.mixin.player;
 
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import dev.tocraft.walkers.api.PlayerShape;
 import dev.tocraft.walkers.mixin.LivingEntityMixin;
 import dev.tocraft.walkers.mixin.accessor.EntityAccessor;
@@ -50,7 +49,6 @@ import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.boat.Boat;
-import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
@@ -348,12 +346,6 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
         if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && TraitRegistry.has(shape, InvulnerabilityTrait.ID)) {
             cir.setReturnValue(true);
         }
-    }
-
-    @WrapWithCondition(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;tick(Lnet/minecraft/server/level/ServerPlayer;)V"))
-    private boolean preventFoodDataTick(FoodData instance, ServerPlayer player) {
-        LivingEntity shape = PlayerShape.getCurrentShape(player);
-        return player.hasEffect(MobEffects.SATURATION) || !TraitRegistry.has(shape, AttackForHealthTrait.ID);
     }
 
     @Inject(method = "canEat", at = @At("RETURN"), cancellable = true)

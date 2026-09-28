@@ -78,7 +78,11 @@ public class RegistryTypeProvider<T extends LivingEntity, V> extends TypeProvide
 
     @Override
     public Component modifyText(@NotNull T entity, MutableComponent text) {
-        Optional<MutableComponent> variant = getVariant(entity).flatMap(Holder::unwrapKey).map(key -> Component.literal(formatTypePrefix(key.identifier().getPath() + " ")));
+        Optional<MutableComponent> variant = getVariant(entity).flatMap(Holder::unwrapKey).map(key -> {
+            String path = key.identifier().getPath();
+            String variantKey = "walkers.variant." + key.identifier().getNamespace() + "." + path;
+            return Component.translatableWithFallback(variantKey, formatTypePrefix(path + " "));
+        });
 
         return variant.map(c -> c.append(text)).orElse(text);
     }

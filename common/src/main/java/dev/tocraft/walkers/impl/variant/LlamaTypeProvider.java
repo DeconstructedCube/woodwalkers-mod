@@ -39,6 +39,7 @@ public class LlamaTypeProvider<L extends Llama> extends TypeProvider<L> {
 
     @Override
     public Component modifyText(Llama entity, MutableComponent text) {
-        return Component.literal(entity.getVariant().getSerializedName() + " ").append(text);
+        String variantName = entity.getVariant().getSerializedName();
+        return Component.translatableWithFallback("walkers.variant.llama." + variantName, formatTypePrefix(variantName) + " ").append(text);
     }
 }

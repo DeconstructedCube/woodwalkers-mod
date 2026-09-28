@@ -37,6 +37,7 @@ public class FoxTypeProvider extends TypeProvider<Fox> {
 
     @Override
     public Component modifyText(Fox entity, MutableComponent text) {
-        return Component.literal(formatTypePrefix(Fox.Variant.byId(getVariantData(entity)).name()) + " ").append(text);
+        String varName = Fox.Variant.byId(getVariantData(entity)).name().toLowerCase(java.util.Locale.ROOT);
+        return Component.translatableWithFallback("walkers.variant.fox." + varName, formatTypePrefix(varName) + " ").append(text);
     }
 }

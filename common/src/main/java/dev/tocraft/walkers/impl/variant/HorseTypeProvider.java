@@ -38,6 +38,6 @@ public class HorseTypeProvider extends TypeProvider<Horse> {
     @Override
     public Component modifyText(Horse entity, MutableComponent text) {
         String variantName = entity.getVariant().getSerializedName();
-        return Component.literal(variantName + " ").append(text);
+        return Component.translatableWithFallback("walkers.variant.horse." + variantName, formatTypePrefix(variantName) + " ").append(text);
     }
 }

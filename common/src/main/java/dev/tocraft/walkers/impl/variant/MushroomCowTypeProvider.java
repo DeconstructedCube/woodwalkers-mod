@@ -37,6 +37,6 @@ public class MushroomCowTypeProvider extends TypeProvider<MushroomCow> {
     @Override
     public Component modifyText(@NotNull MushroomCow entity, MutableComponent text) {
         String variantName = entity.getVariant().getSerializedName();
-        return Component.literal(formatTypePrefix(variantName) + " ").append(text);
+        return Component.translatableWithFallback("walkers.variant.mooshroom." + variantName, formatTypePrefix(variantName) + " ").append(text);
     }
 }
