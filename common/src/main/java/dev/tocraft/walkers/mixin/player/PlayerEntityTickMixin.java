@@ -19,6 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -93,8 +94,23 @@ public abstract class PlayerEntityTickMixin extends LivingEntity {
         if (!this.level().isClientSide() && this.isAlive()) {
             Player player = (Player) (Object) this;
             LivingEntity shape = PlayerShape.getCurrentShape(player);
-            if (shape instanceof Pufferfish pufferfishShape) {
+            if (shape instanceof Pufferfish pufferfishShape && player instanceof ServerPlayer serverPlayer) {
                 int oldPuffState = pufferfishShape.getPuffState();
+                ServerLevel serverLevel = (ServerLevel) serverPlayer.level();
+
+                List<LivingEntity> scaryEntities = serverLevel.getEntitiesOfClass(
+                        LivingEntity.class,
+                        serverPlayer.getBoundingBox().inflate(2.0),
+                        livingEntity -> livingEntity != serverPlayer && livingEntity.isAlive() && (!(livingEntity instanceof Player p) ? !livingEntity.getType().is(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH) : (!p.isCreative() && !p.isSpectator()))
+                );
+
+                if (!scaryEntities.isEmpty()) {
+                    if (((PufferfishAccessor) pufferfishShape).getInflateCounter() == 0) {
+                        ((PufferfishAccessor) pufferfishShape).setInflateCounter(1);
+                        ((PufferfishAccessor) pufferfishShape).setDeflateTimer(0);
+                    }
+                }
+
                 if (((PufferfishAccessor) pufferfishShape).getInflateCounter() > 0) {
                     if (pufferfishShape.getPuffState() == 0) {
                         this.playSound(SoundEvents.PUFFER_FISH_BLOW_UP, this.getSoundVolume(), this.getVoicePitch());
@@ -104,7 +120,11 @@ public abstract class PlayerEntityTickMixin extends LivingEntity {
                         pufferfishShape.setPuffState(2);
                     }
 
-                    ((PufferfishAccessor) pufferfishShape).setInflateCounter(((PufferfishAccessor) pufferfishShape).getInflateCounter() + 1);
+                    if (scaryEntities.isEmpty()) {
+                        ((PufferfishAccessor) pufferfishShape).setInflateCounter(0);
+                    } else {
+                        ((PufferfishAccessor) pufferfishShape).setInflateCounter(((PufferfishAccessor) pufferfishShape).getInflateCounter() + 1);
+                    }
                 } else if (pufferfishShape.getPuffState() != 0) {
                     if (((PufferfishAccessor) pufferfishShape).getDeflateTimer() > 60 && pufferfishShape.getPuffState() == 2) {
                         this.playSound(SoundEvents.PUFFER_FISH_BLOW_OUT, this.getSoundVolume(), this.getVoicePitch());
@@ -121,12 +141,11 @@ public abstract class PlayerEntityTickMixin extends LivingEntity {
                     player.refreshDimensions();
                 }
 
-                if (pufferfishShape.getPuffState() > 0 && player instanceof ServerPlayer serverPlayer) {
-                    ServerLevel serverLevel = (ServerLevel) serverPlayer.level();
+                if (pufferfishShape.getPuffState() > 0) {
                     List<LivingEntity> nearby = serverLevel.getEntitiesOfClass(
                             LivingEntity.class,
                             serverPlayer.getBoundingBox().inflate(0.3),
-                            target -> target != serverPlayer && target.isAlive() && (!(target instanceof Player p) || (!p.isCreative() && !p.isSpectator()))
+                            target -> target != serverPlayer && target.isAlive() && (!(target instanceof Player p) ? !target.getType().is(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH) : (!p.isCreative() && !p.isSpectator()))
                     );
                     int puffState = pufferfishShape.getPuffState();
                     for (LivingEntity target : nearby) {
