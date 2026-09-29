@@ -19,9 +19,11 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.animal.equine.Horse;
 import net.minecraft.world.entity.monster.Blaze;
@@ -322,5 +324,21 @@ public abstract class LivingEntityMixin extends Entity implements NearbySongAcce
             return walkers$HORSE_SPRINT_MODIFIER;
         }
         return original;
+    }
+
+    @Inject(method = "getDimensions", at = @At("HEAD"), cancellable = true)
+    private void shape_getDimensions(Pose pose, CallbackInfoReturnable<EntityDimensions> cir) {
+        if ((Object) this instanceof Player player) {
+            LivingEntity shape = PlayerShape.getCurrentShape(player);
+
+            if (shape != null) {
+                if (pose == Pose.CROUCHING && TraitRegistry.has(shape, HumanoidTrait.ID)) {
+                    EntityDimensions shapeDimensions = shape.getDimensions(Pose.STANDING);
+                    cir.setReturnValue(shapeDimensions.scale(1.0F, 1.5F / 1.8F).withEyeHeight(shapeDimensions.eyeHeight() * (1.27F / 1.62F)));
+                } else {
+                    cir.setReturnValue(shape.getDimensions(pose));
+                }
+            }
+        }
     }
 }

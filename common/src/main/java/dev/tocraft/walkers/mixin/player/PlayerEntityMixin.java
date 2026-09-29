@@ -278,12 +278,46 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
     @Inject(method = "touch", at = @At("HEAD"))
     private void onTouch(Entity entity, CallbackInfo ci) {
         Player ownPlayer = (Player) (Object) this;
-        if (!this.level().isClientSide() && ownPlayer.isAlive() && PlayerShape.getCurrentShape(ownPlayer) instanceof Slime slimeShape && (entity instanceof Player targetPlayer && !(PlayerShape.getCurrentShape(targetPlayer) instanceof Slime))) {
-            int i = slimeShape.getSize();
-            boolean wasHurt = targetPlayer.hurtServer((ServerLevel) level(), ownPlayer.damageSources().mobAttack(ownPlayer), (float) ownPlayer.getAttributeValue(Attributes.ATTACK_DAMAGE));
-            if (this.distanceToSqr(targetPlayer) < 0.6 * (double) i * 0.6 * (double) i && ownPlayer.hasLineOfSight(targetPlayer) && wasHurt) {
-                this.playSound(SoundEvents.SLIME_ATTACK, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-                EnchantmentHelper.doPostAttackEffects((ServerLevel) ownPlayer.level(), targetPlayer, ownPlayer.damageSources().mobAttack(ownPlayer));
+        if (!this.level().isClientSide() && ownPlayer.isAlive()) {
+            LivingEntity shape = PlayerShape.getCurrentShape(ownPlayer);
+            if (shape instanceof Slime slimeShape && (entity instanceof Player targetPlayer && !(PlayerShape.getCurrentShape(targetPlayer) instanceof Slime))) {
+                int i = slimeShape.getSize();
+                boolean wasHurt = targetPlayer.hurtServer((ServerLevel) level(), ownPlayer.damageSources().mobAttack(ownPlayer), (float) ownPlayer.getAttributeValue(Attributes.ATTACK_DAMAGE));
+                if (this.distanceToSqr(targetPlayer) < 0.6 * (double) i * 0.6 * (double) i && ownPlayer.hasLineOfSight(targetPlayer) && wasHurt) {
+                    this.playSound(SoundEvents.SLIME_ATTACK, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+                    EnchantmentHelper.doPostAttackEffects((ServerLevel) ownPlayer.level(), targetPlayer, ownPlayer.damageSources().mobAttack(ownPlayer));
+                }
+            } else if (shape instanceof Pufferfish pufferfish && pufferfish.getPuffState() > 0 && entity instanceof LivingEntity livingTarget && livingTarget != ownPlayer) {
+                if (!(livingTarget instanceof Player p) || (!p.isCreative() && !p.isSpectator())) {
+                    int i = pufferfish.getPuffState();
+                    if (livingTarget.hurtServer((ServerLevel) level(), ownPlayer.damageSources().mobAttack(ownPlayer), (float) (1 + i))) {
+                        livingTarget.addEffect(new MobEffectInstance(MobEffects.POISON, 60 * i, 0), ownPlayer);
+                        this.playSound(SoundEvents.PUFFER_FISH_STING, 1.0F, 1.0F);
+
+                        if (livingTarget instanceof ServerPlayer serverPlayerTarget && !ownPlayer.isSilent()) {
+                            serverPlayerTarget.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.PUFFER_FISH_STING, 0.0F));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Inject(method = "hurtServer", at = @At("HEAD"))
+    private void pufferfishRetaliate(ServerLevel level, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        Player player = (Player) (Object) this;
+        LivingEntity shape = PlayerShape.getCurrentShape(player);
+        if (shape instanceof Pufferfish pufferfish && pufferfish.getPuffState() > 0 && source.getEntity() instanceof LivingEntity attacker && attacker != player) {
+            if (!(attacker instanceof Player p) || (!p.isCreative() && !p.isSpectator())) {
+                int i = pufferfish.getPuffState();
+                if (attacker.hurtServer(level, player.damageSources().thorns(player), (float) (1 + i))) {
+                    attacker.addEffect(new MobEffectInstance(MobEffects.POISON, 60 * i, 0), player);
+                    this.playSound(SoundEvents.PUFFER_FISH_STING, 1.0F, 1.0F);
+
+                    if (attacker instanceof ServerPlayer serverPlayerAttacker && !player.isSilent()) {
+                        serverPlayerAttacker.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.PUFFER_FISH_STING, 0.0F));
+                    }
+                }
             }
         }
     }

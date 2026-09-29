@@ -3,13 +3,10 @@ package dev.tocraft.walkers.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.tocraft.walkers.api.PlayerShape;
 import dev.tocraft.walkers.traits.TraitRegistry;
-import dev.tocraft.walkers.traits.impl.HumanoidTrait;
 import dev.tocraft.walkers.traits.impl.NoPhysicsTrait;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
@@ -81,17 +78,4 @@ public abstract class EntityMixin {
         return original;
     }
 
-    @Inject(method = "getDimensions", at = @At("HEAD"), cancellable = true)
-    private void getDimensions(Pose pose, CallbackInfoReturnable<EntityDimensions> cir) {
-        if ((Object) this instanceof Player player) {
-            LivingEntity entity = PlayerShape.getCurrentShape(player);
-
-            if (entity != null) {
-                if (pose != Pose.CROUCHING || !TraitRegistry.has(entity, HumanoidTrait.ID)) {
-                    EntityDimensions shapeDimensions = entity.getDimensions(pose);
-                    cir.setReturnValue(shapeDimensions);
-                }
-            }
-        }
-    }
 }

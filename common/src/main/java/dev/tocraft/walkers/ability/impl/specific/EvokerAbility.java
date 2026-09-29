@@ -57,7 +57,7 @@ public class EvokerAbility<T extends LivingEntity> extends AnimationAbility<T> {
                 // If we cannot go up or down 1 block (or stay at the same level), the chain ends.
 
                 // If the block underneath is solid, we are good to go.
-                EvokerFangs fangs = new EvokerFangs(world, origin.x(), origin.y(), origin.z(), player.getYRot(), blockOut * 2, player);
+                EvokerFangs fangs = new EvokerFangs(world, origin.x(), origin.y(), origin.z(), (float) Math.toRadians(player.getYRot()), blockOut * 2, player);
                 BlockPos underneathPosition = BlockPos.containing(origin).below();
                 BlockState underneath = world.getBlockState(underneathPosition);
                 if (underneath.isFaceSturdy(world, underneathPosition, Direction.UP) && world.isEmptyBlock(underneathPosition.above())) {
@@ -77,7 +77,7 @@ public class EvokerAbility<T extends LivingEntity> extends AnimationAbility<T> {
 
                 // Check above (1x up)
                 BlockPos upPosition = BlockPos.containing(origin).above();
-                BlockState up = world.getBlockState(underneath2Position);
+                BlockState up = world.getBlockState(upPosition);
                 if (up.isFaceSturdy(world, upPosition, Direction.UP) && world.isEmptyBlock(upPosition)) {
                     fangs.setPosRaw(fangs.getX(), fangs.getY() + 1, fangs.getZ());
                     world.addFreshEntity(fangs);

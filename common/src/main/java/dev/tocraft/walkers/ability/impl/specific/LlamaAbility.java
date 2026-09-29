@@ -25,11 +25,10 @@ public class LlamaAbility<T extends LivingEntity> extends ShapeAbility<T> {
     public void onUse(ServerPlayer player, T shape, ServerLevel world) {
         LlamaSpit spit = new LlamaSpit(EntityType.LLAMA_SPIT, world);
         spit.setOwner(player);
+        spit.setPos(player.getX(), player.getEyeY(), player.getZ());
+        spit.syncPacketPositionCodec(player.getX(), player.getEyeY(), player.getZ());
         Vec3 rotation = player.getLookAngle();
         spit.shoot(rotation.x, rotation.y, rotation.z, 1.5F, 10.0F);
-        spit.syncPacketPositionCodec(player.getX(), player.getEyeY(), player.getZ());
-        spit.setPos(player.getX(), player.getEyeY(), player.getZ());
-
         // Play SFX
         world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.LLAMA_SPIT, player.getSoundSource(), 1.0F, 1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F);
 

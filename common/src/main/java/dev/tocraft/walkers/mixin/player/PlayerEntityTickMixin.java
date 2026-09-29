@@ -13,6 +13,7 @@ import dev.tocraft.walkers.mixin.accessor.PufferfishAccessor;
 import dev.tocraft.walkers.mixin.accessor.SheepAccessor;
 import dev.tocraft.walkers.traits.TraitRegistry;
 import dev.tocraft.walkers.traits.impl.MobEffectTrait;
+import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -90,8 +91,10 @@ public abstract class PlayerEntityTickMixin extends LivingEntity {
     @Inject(method = "tick", at = @At("HEAD"))
     private void pufferfishServerTick(CallbackInfo info) {
         if (!this.level().isClientSide() && this.isAlive()) {
-            LivingEntity shape = PlayerShape.getCurrentShape((Player) (Object) this);
+            Player player = (Player) (Object) this;
+            LivingEntity shape = PlayerShape.getCurrentShape(player);
             if (shape instanceof Pufferfish pufferfishShape) {
+                int oldPuffState = pufferfishShape.getPuffState();
                 if (((PufferfishAccessor) pufferfishShape).getInflateCounter() > 0) {
                     if (pufferfishShape.getPuffState() == 0) {
                         this.playSound(SoundEvents.PUFFER_FISH_BLOW_UP, this.getSoundVolume(), this.getVoicePitch());
@@ -112,6 +115,29 @@ public abstract class PlayerEntityTickMixin extends LivingEntity {
                     }
 
                     ((PufferfishAccessor) pufferfishShape).setDeflateTimer(((PufferfishAccessor) pufferfishShape).getDeflateTimer() + 1);
+                }
+
+                if (oldPuffState != pufferfishShape.getPuffState()) {
+                    player.refreshDimensions();
+                }
+
+                if (pufferfishShape.getPuffState() > 0 && player instanceof ServerPlayer serverPlayer) {
+                    ServerLevel serverLevel = (ServerLevel) serverPlayer.level();
+                    List<LivingEntity> nearby = serverLevel.getEntitiesOfClass(
+                            LivingEntity.class,
+                            serverPlayer.getBoundingBox().inflate(0.3),
+                            target -> target != serverPlayer && target.isAlive() && (!(target instanceof Player p) || (!p.isCreative() && !p.isSpectator()))
+                    );
+                    int puffState = pufferfishShape.getPuffState();
+                    for (LivingEntity target : nearby) {
+                        if (target.hurtServer(serverLevel, serverPlayer.damageSources().mobAttack(serverPlayer), (float) (1 + puffState))) {
+                            target.addEffect(new MobEffectInstance(MobEffects.POISON, 60 * puffState, 0), serverPlayer);
+                            serverPlayer.playSound(SoundEvents.PUFFER_FISH_STING, 1.0F, 1.0F);
+                            if (target instanceof ServerPlayer serverPlayerTarget && !serverPlayer.isSilent()) {
+                                serverPlayerTarget.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.PUFFER_FISH_STING, 0.0F));
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -41,7 +41,7 @@ public class ExplosionAbility<T extends LivingEntity> extends GenericShapeAbilit
 
     @Override
     public void onUse(ServerPlayer player, T shape, ServerLevel world) {
-        world.explode(player, player.getX(), player.getY(), player.getZ(), 3.0f, ExplosionInteraction.NONE);
+        world.explode(player, player.getX(), player.getY(), player.getZ(), radius, ExplosionInteraction.MOB);
     }
 
     @Override
