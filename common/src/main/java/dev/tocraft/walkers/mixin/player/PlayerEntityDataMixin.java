@@ -295,7 +295,7 @@ public abstract class PlayerEntityDataMixin extends LivingEntity implements Play
                     armorAttribute.setBaseValue(0);
                 }
                 if (armorToughnessAttribute != null) {
-                    armorAttribute.setBaseValue(0);
+                    armorToughnessAttribute.setBaseValue(0);
                 }
             }
 
